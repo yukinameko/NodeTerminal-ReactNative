@@ -36,30 +36,32 @@ export default class App extends Component<Props> {
     this.state = {
       inputValue: '',
       historyList: []
-    }
+    };
   }
-  data = {};
 
   _onChangeText = inputValue => this.setState({inputValue});
-  _onPressButton = () => {
+  _onPress = () => {
     const {inputValue, historyList} = this.state;
 
     var result = this._data(this._encode(inputValue));
     
     const _historyList = historyList.concat();
-    _historyList.push(inputValue);
-    _historyList.push(result);
+    _historyList.push(inputValue+"");
+    _historyList.push(result+"");
 
     this.setState({
       inputValue:'',
       historyList:_historyList
     });
-    // Alert.alert(this.state.historyValue);
   };
-  // _onPressButton = () => Alert.alert(eval(this._encode(this.state.inputValue))+"");
-  _encode = (str) => str.replace(/'/g, "\'").replace(/var/g, '').replace(/\$/g, 'this.data.');
-  _data = str => eval(str);
-  // func = () => {};
+  _encode = (str) => str.replace(/'/g, "\\'").replace(/var /g, 'data.').replace(/\$/g, 'data.');
+  _onKeyDown = (e) => Alert.alert(e);
+  _data = (() => {
+    var data = {};
+    var func = str => eval(str);
+    return func;
+  })();
+  
   render() {
     const {
       inputValue,
@@ -67,14 +69,14 @@ export default class App extends Component<Props> {
     } = this.state;
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
+        <Text style={styles.welcome}>Welcome to node in iOS!</Text>
         
         <FlatList data={historyList} renderItem={({item}) => <Text>{item}</Text>} />
         
         <Text style={styles.instructions}>{instructions}</Text>
         
         <TextInput value={this.state.inputValue} onChangeText={this._onChangeText}/>
-        <TouchableOpacity onPress={this._onPressButton}>
+        <TouchableOpacity onPress={this._onPress} onKeyDown={this._onKeyDown}>
           <Text> enter </Text>
         </TouchableOpacity>
 
