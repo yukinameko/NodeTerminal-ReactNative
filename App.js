@@ -8,7 +8,19 @@
  */
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {
+  Platform, 
+  StyleSheet, 
+  Alert,
+  Text, 
+  TextInput, 
+  Button, 
+  ImagePicker,
+  Permissions,
+  View,
+  TouchableOpacity,
+  FlatList
+} from 'react-native';
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -19,12 +31,53 @@ const instructions = Platform.select({
 
 type Props = {};
 export default class App extends Component<Props> {
+  constructor(props){
+    super(props);
+    this.state = {
+      inputValue: '',
+      historyList: []
+    }
+  }
+  data = {};
+
+  _onChangeText = inputValue => this.setState({inputValue});
+  _onPressButton = () => {
+    const {inputValue, historyList} = this.state;
+
+    var result = this._data(this._encode(inputValue));
+    
+    const _historyList = historyList.concat();
+    _historyList.push(inputValue);
+    _historyList.push(result);
+
+    this.setState({
+      inputValue:'',
+      historyList:_historyList
+    });
+    // Alert.alert(this.state.historyValue);
+  };
+  // _onPressButton = () => Alert.alert(eval(this._encode(this.state.inputValue))+"");
+  _encode = (str) => str.replace(/'/g, "\'").replace(/var/g, '').replace(/\$/g, 'this.data.');
+  _data = str => eval(str);
+  // func = () => {};
   render() {
+    const {
+      inputValue,
+      historyList
+    } = this.state;
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
+        
+        <FlatList data={historyList} renderItem={({item}) => <Text>{item}</Text>} />
+        
         <Text style={styles.instructions}>{instructions}</Text>
+        
+        <TextInput value={this.state.inputValue} onChangeText={this._onChangeText}/>
+        <TouchableOpacity onPress={this._onPressButton}>
+          <Text> enter </Text>
+        </TouchableOpacity>
+
       </View>
     );
   }
