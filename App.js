@@ -41,7 +41,8 @@ export default class App extends Component<Props> {
     const {inputValue, list, historyList} = this.state;
 
     // 入力文字をエンコードした上で実行し，実行結果を取得
-    var result = this._data(this._encode(inputValue));
+    const result = this._data(this._encode(inputValue));
+    // const result = eval(inputValue);
     
     // 実行コードと結果を追加
     const _list = list.concat();
@@ -57,13 +58,13 @@ export default class App extends Component<Props> {
     });
   };
 
-  // $, 'var 'で始まるものを変数として処理し，'data.'に置き換える
-  _encode = (str) => str.replace(/'/g, "\\'").replace(/var /g, 'data.').replace(/\$/g, 'data.');
+  // '$', '(var|const|let) 'に続くものを変数とし，'data.'に置き換える
+  _encode = (str) => str.replace(/(\u2018|\u2019|\u201c|\u201d)/g, "'").replace(/(var|const|let) /g, 'data.').replace(/\$/g, 'data.');
   // 変数を保持するためのdataオブジェクトを内部に持つ関数
   // eval実行時のスコープは関数内
   _data = (() => {
-    var data = {};
-    var func = str => eval(str);
+    const data = {};
+    const func = str => eval(str);
     return func;
   })();
   
